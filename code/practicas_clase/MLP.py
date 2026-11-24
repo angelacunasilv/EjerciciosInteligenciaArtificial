@@ -46,7 +46,7 @@ print(mod)
 results = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss, Test accuracy:', results)
 
-ruta_modelo = Path(__file__).with_name("modelo_mlp.keras")
+ruta_modelo = Path(__file__).resolve().parent.parent / "07_clasificacion_digitos" / "modelo_mnist.keras"
 model.save(ruta_modelo)
 print(f"Modelo guardado en {ruta_modelo}")
 

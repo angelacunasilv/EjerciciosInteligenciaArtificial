@@ -1,8 +1,0 @@
-{
-  "dataset": "MNIST, conjunto de prueba",
-  "imagenes_prueba": 10000,
-  "precision_modelo_existente": 0.9224,
-  "imagenes_preprocesadas": 100,
-  "precision_muestra_preprocesada": 0.93,
-  "nota": "Modelo existente, sin reentrenar. La interfaz grafica requiere una prueba manual con dibujos."
-}

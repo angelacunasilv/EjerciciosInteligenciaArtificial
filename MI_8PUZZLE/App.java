@@ -3,19 +3,19 @@ package puzzle8;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Proyecto {
+public class App {
     public static void main(String[] args) {
         String algoritmo = args.length > 0 ? args[0] : "bfs";
         String inicio = args.length > 1 ? args[1] : "1238 4765";
         String objetivo = args.length > 2 ? args[2] : "1284376 5";
         int limite = args.length > 3 ? Integer.parseInt(args[3]) : 31;
-        ArbolDeBusqueda arbol = new ArbolDeBusqueda(new Nodo(inicio));
+        PuzzleTree arbol = new PuzzleTree(new NodoPuzzle(inicio));
         String[] algoritmos = algoritmo.equals("comparar")
             ? new String[]{"bfs", "dfs", "ucs", "limitada", "iterativa", "bidireccional"}
             : new String[]{algoritmo};
         for (String nombre : algoritmos) {
             long tiempo = System.nanoTime();
-            Nodo solucion;
+            NodoPuzzle solucion;
             switch (nombre) {
                 case "bfs": solucion = arbol.busquedaPrimeroAnchura(objetivo); break;
                 case "dfs": solucion = arbol.busquedaProfundidad(objetivo); break;
@@ -41,7 +41,7 @@ public class Proyecto {
         }
     }
 
-    static List<String> reconstruirCamino(Nodo nodo) {
+    static List<String> reconstruirCamino(NodoPuzzle nodo) {
         LinkedList<String> camino = new LinkedList<>();
         while (nodo != null) {
             camino.addFirst(nodo.estado);

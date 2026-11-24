@@ -9,34 +9,34 @@ import java.util.List;
 
 
 
-public class Nodo {
+public class NodoPuzzle {
     String estado;
-    Nodo padre;
-    List<Nodo> hijos;  
+    NodoPuzzle padre;
+    List<NodoPuzzle> hijos;
     int nivel;
     int costo;
 
- 
-    public Nodo(String estado) {
-        Puzzle8.validarEstado(estado);
+
+    public NodoPuzzle(String estado) {
+        Utils.validarEstado(estado);
         this.estado = estado;
         this.padre = null;
         this.nivel = 0;
         this.costo = 0;
     }
 
-  
-    public Nodo(String estado, Nodo padre) {
-        Puzzle8.validarEstado(estado);
+
+    public NodoPuzzle(String estado, NodoPuzzle padre) {
+        Utils.validarEstado(estado);
         this.estado = estado;
         this.padre = padre;
         this.nivel = (padre == null) ? 0 : padre.nivel + 1;
         this.costo = padre == null ? 0 : padre.costo + 1;
     }
 
- 
-    public Nodo(String estado, Nodo padre, int nivel) {
-        Puzzle8.validarEstado(estado);
+
+    public NodoPuzzle(String estado, NodoPuzzle padre, int nivel) {
+        Utils.validarEstado(estado);
         this.estado = estado;
         this.padre = padre;
         this.nivel = nivel;
@@ -46,16 +46,16 @@ public class Nodo {
     public String getEstado() { return estado; }
     public int getNivel() { return nivel; }
     public int getCosto() { return costo; }
-    public Nodo getPadre() { return padre; }
+    public NodoPuzzle getPadre() { return padre; }
 
-    public List<Nodo> generarSucesores() {
-        String[] estadoHijos = Puzzle8.generarSucesores(estado);
-        List<Nodo> sucesores = new ArrayList<>();
+    public List<NodoPuzzle> generarSucesores() {
+        String[] estadoHijos = Utils.generarSucesores(estado);
+        List<NodoPuzzle> sucesores = new ArrayList<>();
 
         for (String estadoHijo : estadoHijos) {
             if (estadoHijo != null) {
- 
-                Nodo nodoHijo = new Nodo(estadoHijo, this, this.nivel + 1);
+
+                NodoPuzzle nodoHijo = new NodoPuzzle(estadoHijo, this, this.nivel + 1);
                 sucesores.add(nodoHijo);
             }
         }

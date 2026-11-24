@@ -1,7 +1,6 @@
 """Tarea 4: regresion lineal con California Housing y descenso de gradiente."""
 import argparse
 import json
-from pathlib import Path
 
 import numpy as np
 from sklearn.datasets import fetch_california_housing
@@ -29,7 +28,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--epocas", type=int, default=3000)
     parser.add_argument("--sin-grafica", action="store_true")
-    parser.add_argument("--salida", type=Path, default=Path(__file__).parent / "resultados")
     args = parser.parse_args()
     if args.epocas < 1:
         parser.error("Las epocas deben ser positivas.")
@@ -50,10 +48,10 @@ def main():
         "r2_prueba": float(r2_score(y_test, prediccion)),
         "diferencia_minimos_cuadrados": float(np.max(np.abs(exacto - [w, b]))),
     }
-    args.salida.mkdir(parents=True, exist_ok=True)
-    (args.salida / "metricas.json").write_text(json.dumps(resultado, indent=2), encoding="utf-8")
     print(json.dumps(resultado, indent=2))
     print(f"Valor medio (USD) = 100000 * ({w:.4f} * MedInc + {b:.4f})")
+    if args.sin_grafica:
+        return
 
     import matplotlib
     if args.sin_grafica:
@@ -69,7 +67,6 @@ def main():
     ejes[1].plot(costos)
     ejes[1].set(xlabel="Epoca", ylabel="MSE / 2", title="Costo de entrenamiento")
     fig.tight_layout()
-    fig.savefig(args.salida / "regresion_california.png", dpi=130)
     if not args.sin_grafica:
         plt.show()
     plt.close(fig)

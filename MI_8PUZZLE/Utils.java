@@ -3,7 +3,7 @@ package puzzle8;
  *
  * @author angel
  */
-public class Puzzle8 {
+public class Utils {
     public static void validarEstado(String estado) {
         if (estado == null || estado.length() != 9) {
             throw new IllegalArgumentException("Usa las fichas 1 a 8 y un espacio.");
@@ -43,7 +43,7 @@ public class Puzzle8 {
         switch (indice) {
 
             // posicion 0
-            case 0: 
+            case 0:
                 sucesores = new String[2];
 
                 // mueve de la derecha

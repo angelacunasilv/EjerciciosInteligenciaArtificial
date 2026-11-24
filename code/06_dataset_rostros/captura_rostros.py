@@ -1,4 +1,6 @@
 """Agregar capturas de una persona al dataset (se ejecuta manualmente)."""
+# Dataset compartido del equipo:
+# https://github.com/majisus7245-sudo/Curso_Inteligencia_Artificial/tree/e77bc875b74efa3a3410461199210bc413040837/code/06_dataset_rostros/dataset
 import argparse
 from pathlib import Path
 import re

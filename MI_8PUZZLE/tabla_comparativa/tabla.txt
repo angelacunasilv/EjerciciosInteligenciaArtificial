@@ -51,7 +51,7 @@ El 8-puzzle tiene 181440 estados alcanzables desde cualquier tablero.
 Desde la raiz del proyecto, con JDK 17:
 
 javac -d build MI_8PUZZLE/*.java Diagnostico/*.java
-java -cp build puzzle8.Proyecto comparar "1238 4765" "1284376 5" 21
+java -cp build puzzle8.App comparar "1238 4765" "1284376 5" 21
 
 Estado inicial:      Estado meta:
 1 2 3                1 2 8

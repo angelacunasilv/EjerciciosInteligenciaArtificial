@@ -10,51 +10,51 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.ToIntBiFunction;
 
-public class ArbolDeBusqueda {
-    private final Nodo raiz;
-    public ArbolDeBusqueda(Nodo raiz) { this.raiz = raiz; }
+public class PuzzleTree {
+    private final NodoPuzzle raiz;
+    public PuzzleTree(NodoPuzzle raiz) { this.raiz = raiz; }
 
     private boolean preparar(String objetivo) {
-        Puzzle8.validarEstado(objetivo);
-        return raiz != null && Puzzle8.esSoluble(raiz.estado, objetivo);
+        Utils.validarEstado(objetivo);
+        return raiz != null && Utils.esSoluble(raiz.estado, objetivo);
     }
 
-    public Nodo busquedaPrimeroAnchura(String objetivo) { return buscar(objetivo, false); }
-    public Nodo busquedaProfundidad(String objetivo) { return buscar(objetivo, true); }
+    public NodoPuzzle busquedaPrimeroAnchura(String objetivo) { return buscar(objetivo, false); }
+    public NodoPuzzle busquedaProfundidad(String objetivo) { return buscar(objetivo, true); }
 
-    private Nodo buscar(String objetivo, boolean profundidad) {
+    private NodoPuzzle buscar(String objetivo, boolean profundidad) {
         if (!preparar(objetivo)) return null;
         Set<String> visitados = new HashSet<>();
-        Deque<Nodo> frontera = new ArrayDeque<>();
-        frontera.add(new Nodo(raiz.estado));
+        Deque<NodoPuzzle> frontera = new ArrayDeque<>();
+        frontera.add(new NodoPuzzle(raiz.estado));
         visitados.add(raiz.estado);
         while (!frontera.isEmpty()) {
-            Nodo actual = profundidad ? frontera.removeLast() : frontera.removeFirst();
+            NodoPuzzle actual = profundidad ? frontera.removeLast() : frontera.removeFirst();
             if (actual.estado.equals(objetivo)) return actual;
-            for (Nodo sucesor : actual.generarSucesores()) {
+            for (NodoPuzzle sucesor : actual.generarSucesores()) {
                 if (visitados.add(sucesor.estado)) frontera.addLast(sucesor);
             }
         }
         return null;
     }
 
-    public Nodo busquedaCostoUniforme(String objetivo) {
+    public NodoPuzzle busquedaCostoUniforme(String objetivo) {
         return busquedaCostoUniforme(objetivo, (desde, hasta) -> 1);
     }
 
-    public Nodo busquedaCostoUniforme(String objetivo,
+    public NodoPuzzle busquedaCostoUniforme(String objetivo,
                                       ToIntBiFunction<String, String> costoMovimiento) {
         if (!preparar(objetivo)) return null;
-        PriorityQueue<Nodo> frontera = new PriorityQueue<>(
-            Comparator.comparingInt(Nodo::getCosto).thenComparing(Nodo::getEstado));
+        PriorityQueue<NodoPuzzle> frontera = new PriorityQueue<>(
+            Comparator.comparingInt(NodoPuzzle::getCosto).thenComparing(NodoPuzzle::getEstado));
         Map<String, Integer> mejorCosto = new HashMap<>();
-        frontera.add(new Nodo(raiz.estado));
+        frontera.add(new NodoPuzzle(raiz.estado));
         mejorCosto.put(raiz.estado, 0);
         while (!frontera.isEmpty()) {
-            Nodo actual = frontera.poll();
+            NodoPuzzle actual = frontera.poll();
             if (actual.costo != mejorCosto.get(actual.estado)) continue;
             if (actual.estado.equals(objetivo)) return actual;
-            for (Nodo sucesor : actual.generarSucesores()) {
+            for (NodoPuzzle sucesor : actual.generarSucesores()) {
                 int paso = costoMovimiento.applyAsInt(actual.estado, sucesor.estado);
                 if (paso <= 0) throw new IllegalArgumentException("El costo debe ser positivo.");
                 int costo = Math.addExact(actual.costo, paso);
@@ -68,46 +68,46 @@ public class ArbolDeBusqueda {
         return null;
     }
 
-    public Nodo busquedaProfundidadLimitada(String objetivo, int limite) {
+    public NodoPuzzle busquedaProfundidadLimitada(String objetivo, int limite) {
         if (limite < 0) throw new IllegalArgumentException("El limite no puede ser negativo.");
         if (!preparar(objetivo)) return null;
         Set<String> camino = new HashSet<>();
         camino.add(raiz.estado);
-        return limitada(new Nodo(raiz.estado), objetivo, limite, camino);
+        return limitada(new NodoPuzzle(raiz.estado), objetivo, limite, camino);
     }
 
-    private Nodo limitada(Nodo actual, String objetivo, int restante, Set<String> camino) {
+    private NodoPuzzle limitada(NodoPuzzle actual, String objetivo, int restante, Set<String> camino) {
         if (actual.estado.equals(objetivo)) return actual;
         if (restante == 0) return null;
-        for (Nodo sucesor : actual.generarSucesores()) {
+        for (NodoPuzzle sucesor : actual.generarSucesores()) {
             if (!camino.add(sucesor.estado)) continue;
-            Nodo solucion = limitada(sucesor, objetivo, restante - 1, camino);
+            NodoPuzzle solucion = limitada(sucesor, objetivo, restante - 1, camino);
             camino.remove(sucesor.estado);
             if (solucion != null) return solucion;
         }
         return null;
     }
 
-    public Nodo busquedaIterativa(String objetivo) {
+    public NodoPuzzle busquedaIterativa(String objetivo) {
         // La mayor distancia minima entre dos tableros solubles de 8-puzzle es 31.
         return busquedaIterativa(objetivo, 31);
     }
 
-    public Nodo busquedaIterativa(String objetivo, int limiteMaximo) {
+    public NodoPuzzle busquedaIterativa(String objetivo, int limiteMaximo) {
         if (limiteMaximo < 0) throw new IllegalArgumentException("Limite invalido.");
         if (!preparar(objetivo)) return null;
         for (int limite = 0; limite <= limiteMaximo; limite++) {
-            Nodo solucion = busquedaProfundidadLimitada(objetivo, limite);
+            NodoPuzzle solucion = busquedaProfundidadLimitada(objetivo, limite);
             if (solucion != null) return solucion;
         }
         return null;
     }
 
-    public Nodo busquedaBidireccional(String objetivo) {
+    public NodoPuzzle busquedaBidireccional(String objetivo) {
         if (!preparar(objetivo)) return null;
-        Map<String, Nodo> desdeInicio = new HashMap<>(), desdeMeta = new HashMap<>();
-        Deque<Nodo> inicio = new ArrayDeque<>(), meta = new ArrayDeque<>();
-        Nodo primero = new Nodo(raiz.estado), ultimo = new Nodo(objetivo);
+        Map<String, NodoPuzzle> desdeInicio = new HashMap<>(), desdeMeta = new HashMap<>();
+        Deque<NodoPuzzle> inicio = new ArrayDeque<>(), meta = new ArrayDeque<>();
+        NodoPuzzle primero = new NodoPuzzle(raiz.estado), ultimo = new NodoPuzzle(objetivo);
         inicio.add(primero);
         meta.add(ultimo);
         desdeInicio.put(primero.estado, primero);
@@ -117,10 +117,10 @@ public class ArbolDeBusqueda {
             String encuentro = expandirNivel(inicio, desdeInicio, desdeMeta);
             if (encuentro == null) encuentro = expandirNivel(meta, desdeMeta, desdeInicio);
             if (encuentro != null) {
-                Nodo camino = desdeInicio.get(encuentro);
-                Nodo haciaMeta = desdeMeta.get(encuentro).padre;
+                NodoPuzzle camino = desdeInicio.get(encuentro);
+                NodoPuzzle haciaMeta = desdeMeta.get(encuentro).padre;
                 while (haciaMeta != null) {
-                    camino = new Nodo(haciaMeta.estado, camino);
+                    camino = new NodoPuzzle(haciaMeta.estado, camino);
                     haciaMeta = haciaMeta.padre;
                 }
                 return camino;
@@ -129,11 +129,11 @@ public class ArbolDeBusqueda {
         return null;
     }
 
-    private String expandirNivel(Deque<Nodo> cola, Map<String, Nodo> propios,
-                                Map<String, Nodo> contrarios) {
+    private String expandirNivel(Deque<NodoPuzzle> cola, Map<String, NodoPuzzle> propios,
+                                Map<String, NodoPuzzle> contrarios) {
         int cantidad = cola.size();
         for (int i = 0; i < cantidad; i++) {
-            for (Nodo sucesor : cola.removeFirst().generarSucesores()) {
+            for (NodoPuzzle sucesor : cola.removeFirst().generarSucesores()) {
                 if (propios.containsKey(sucesor.estado)) continue;
                 propios.put(sucesor.estado, sucesor);
                 cola.addLast(sucesor);

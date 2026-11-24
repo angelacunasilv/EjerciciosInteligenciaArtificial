@@ -92,8 +92,6 @@ def main():
     conteos = np.bincount(y_train, minlength=len(clases))
     pesos = {i: float(len(y_train) / (len(clases) * n)) for i, n in enumerate(conteos)}
     args.salida.mkdir(parents=True, exist_ok=True)
-    resultados = args.salida / "resultados"
-    resultados.mkdir(exist_ok=True)
     modelo_path = args.salida / "modelo_propia.keras"
     modelo = crear_modelo(len(clases))
     modelo.summary()
@@ -115,11 +113,6 @@ def main():
         "nota": "Validacion por imagen; fotos de la misma sesion pueden aparecer en ambos grupos. No mide generalizacion a sesiones nuevas.",
     }
     (args.salida / "clases_propia.json").write_text(json.dumps(clases, indent=2), encoding="utf-8")
-    (resultados / "metricas.json").write_text(json.dumps(metricas, indent=2), encoding="utf-8")
-    (resultados / "historial.json").write_text(json.dumps(historial.history, indent=2), encoding="utf-8")
-    particiones = {"entrenamiento": [Path(p).relative_to(args.dataset).as_posix() for p in x_train],
-                   "validacion": [Path(p).relative_to(args.dataset).as_posix() for p in x_val]}
-    (resultados / "particiones.json").write_text(json.dumps(particiones, indent=2), encoding="utf-8")
 
     import matplotlib
     matplotlib.use("Agg")
@@ -131,7 +124,7 @@ def main():
         eje.set(xlabel="Epoca (indice desde 0)", title=titulo)
         eje.legend()
     fig.tight_layout()
-    fig.savefig(resultados / "curvas_propia.png", dpi=130)
+    fig.savefig(args.salida / "curvas_propia.png", dpi=130)
     plt.close(fig)
     print(json.dumps(metricas, indent=2))
 

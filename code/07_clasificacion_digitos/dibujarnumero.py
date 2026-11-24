@@ -11,7 +11,7 @@ LADO_LIENZO = 280
 GROSOR = 22
 LADO_MNIST = 28
 LADO_DIGITO = 20
-RUTA_MODELO = Path(__file__).with_name("modelo_mlp.keras")
+RUTA_MODELO = Path(__file__).with_name("modelo_mnist.keras")
 
 
 def preparar_dibujo(imagen):
@@ -106,7 +106,7 @@ class Interfaz:
 
 def main():
     if not RUTA_MODELO.is_file():
-        raise SystemExit("Falta modelo_mlp.keras. Ejecuta MLP.py primero para entrenarlo.")
+        raise SystemExit("Falta modelo_mnist.keras. Ejecuta code/practicas_clase/MLP.py primero para entrenarlo.")
 
     modelo = load_model(RUTA_MODELO, compile=False)
     ventana = tk.Tk()
