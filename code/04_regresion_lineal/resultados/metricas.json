@@ -1,0 +1,16 @@
+{
+  "dataset": "California Housing",
+  "variable": "MedInc",
+  "entrenamiento": 16512,
+  "prueba": 4128,
+  "semilla": 42,
+  "epocas": 3000,
+  "peso": 0.4193384939381265,
+  "sesgo": 0.4445972916907861,
+  "costo_inicial": 2.8148711615515656,
+  "costo_final": 0.34957235850914115,
+  "mae_dolares": 62990.86530093751,
+  "rmse_dolares": 84209.01241414454,
+  "r2_prueba": 0.45885918903846656,
+  "diferencia_minimos_cuadrados": 1.6653345369377348e-15
+}
