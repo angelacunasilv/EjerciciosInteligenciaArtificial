@@ -1,0 +1,80 @@
+TAREA 3. BUSQUEDAS NO INFORMADAS
+
+1. COMPLEJIDAD ALGORITMICA
+
+b = sucesores por nodo; d = profundidad de la solucion mas cercana.
+m = profundidad maxima; l = limite; C* = costo optimo.
+e = menor costo de movimiento, estrictamente positivo.
+
+Algoritmo           Tiempo (arbol)         Memoria (arbol)       Completo       Optimo
+-----------------------------------------------------------------------------------------
+Anchura BFS         O(b^(d+1))             O(b^(d+1))            Si (b finito)  Costos iguales
+Profundidad DFS     O(b^m)                 O(b*m)                No en general  No
+Costo uniforme UCS  O(b^(1+floor(C*/e)))   O(b^(1+floor(C*/e)))  Si (*)         Si
+Limitada            O(b^l)                O(b*l)                Si l >= d      No en general
+Iterativa IDS       O(b^d)                O(b*d)                Si (b finito)  Costos iguales
+Bidireccional BFS   O(b^(d/2))            O(b^(d/2))            Si (**)        Costos iguales
+
+(*) Con b finito y costo minimo e > 0.
+(**) Con b finito, meta conocida y movimientos reversibles, como en 8-puzzle.
+IDS supone b > 1 para la cota exponencial. En una cadena (b=1), repetir los
+limites 0..d requiere O(d^2) tiempo. La limitada supone b finito.
+
+Las cotas anteriores corresponden a busqueda en arbol. Esta implementacion de
+BFS, DFS y UCS guarda estados visitados o mejores costos. En el grafo FINITO del
+8-puzzle, DFS con visitados SI es completa, pero necesita hasta O(V) memoria;
+la cota O(b*m) no incluye ese conjunto de visitados.
+
+En grafo: BFS usa O(V+E) tiempo y O(V) memoria. UCS usa una cola de prioridad,
+O((V+E) log V) tiempo y O(V+E) memoria, incluyendo entradas antiguas pendientes.
+Limitada e IDS evitan ciclos solo en el camino actual, sin un conjunto global
+de visitados. Mantienen memoria O(b*l) y O(b*d), respectivamente.
+El 8-puzzle tiene 181440 estados alcanzables desde cualquier tablero.
+
+2. DIFERENCIAS ENTRE ALGORITMOS
+
+- BFS usa una cola y encuentra el menor numero de movimientos.
+- DFS usa una pila; puede devolver un camino mucho mas largo.
+- UCS extrae el nodo de MENOR COSTO ACUMULADO. La coincidencia de fichas con
+  la meta no es el costo. La meta se acepta al extraerla de la cola de prioridad.
+- Cada movimiento cuesta 1 por defecto: UCS y BFS dan la misma longitud optima.
+  UCS admite tambien costos positivos diferentes para cada movimiento.
+- La limitada puede fallar si el limite no alcanza la meta.
+- IDS ejecuta la limitada con limites 0, 1, 2, ... hasta encontrar la solucion.
+  Reinicia la busqueda en cada iteracion. No descarta globalmente un estado
+  alcanzado antes por un camino largo: podria necesitar visitarlo con mas
+  profundidad disponible.
+- Bidireccional ejecuta BFS desde ambos extremos y une los caminos.
+
+3. EJECUCION
+
+Desde la raiz del proyecto, con JDK 17:
+
+javac -d build MI_8PUZZLE/*.java Diagnostico/*.java
+java -cp build puzzle8.Proyecto comparar "1238 4765" "1284376 5" 21
+
+Estado inicial:      Estado meta:
+1 2 3                1 2 8
+8   4                4 3 7
+7 6 5                6   5
+
+El programa imprime movimientos, costo y tiempo real para los seis algoritmos.
+El limite 21 aplica a limitada e iterativa. Los tiempos dependen del equipo,
+del calentamiento de Java y del orden de los sucesores.
+
+4. RESULTADOS MEDIDOS EN ESTE PROYECTO
+
+Se ejecuto el problema anterior con limite 21. Cada movimiento cuesta 1.
+
+Algoritmo       Movimientos     Costo       Tiempo (s)
+-----------------------------------------------------
+BFS                     21        21         0.403542
+DFS                  55393     55393         0.385139
+UCS                     21        21         0.237841
+Limitada                21        21         0.266912
+Iterativa               21        21         0.432682
+Bidireccional           21        21         0.002107
+
+Estos valores se midieron aqui, no se copiaron de la tabla de referencia.
+DFS encontro un camino valido, pero mucho mas largo; los demas alcanzaron
+la longitud optima de 21 en este caso (la limitada uso exactamente limite 21).

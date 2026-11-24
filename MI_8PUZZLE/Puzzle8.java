@@ -4,10 +4,38 @@ package puzzle8;
  * @author angel
  */
 public class Puzzle8 {
+    public static void validarEstado(String estado) {
+        if (estado == null || estado.length() != 9) {
+            throw new IllegalArgumentException("Usa las fichas 1 a 8 y un espacio.");
+        }
+        char[] fichas = estado.toCharArray();
+        java.util.Arrays.sort(fichas);
+        if (!new String(fichas).equals(" 12345678")) {
+            throw new IllegalArgumentException("No se permiten fichas repetidas o faltantes.");
+        }
+    }
+
+    public static boolean esSoluble(String inicio, String meta) {
+        validarEstado(inicio);
+        validarEstado(meta);
+        return inversiones(inicio) % 2 == inversiones(meta) % 2;
+    }
+
+    private static int inversiones(String estado) {
+        String fichas = estado.replace(" ", "");
+        int total = 0;
+        for (int i = 0; i < fichas.length(); i++) {
+            for (int j = i + 1; j < fichas.length(); j++) {
+                if (fichas.charAt(i) > fichas.charAt(j)) total++;
+            }
+        }
+        return total;
+    }
     // private String estadoInicial = "1238 4765";
     // private String estadoObjetivo = "12 843765";
 
     public static String[] generarSucesores(String estadoActual) {
+        validarEstado(estadoActual);
 
         String[] sucesores = new String[4];
         int indice = estadoActual.indexOf(" ");

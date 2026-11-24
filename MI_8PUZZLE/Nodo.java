@@ -18,6 +18,7 @@ public class Nodo {
 
  
     public Nodo(String estado) {
+        Puzzle8.validarEstado(estado);
         this.estado = estado;
         this.padre = null;
         this.nivel = 0;
@@ -26,18 +27,20 @@ public class Nodo {
 
   
     public Nodo(String estado, Nodo padre) {
+        Puzzle8.validarEstado(estado);
         this.estado = estado;
         this.padre = padre;
         this.nivel = (padre == null) ? 0 : padre.nivel + 1;
-        this.costo = 0;
+        this.costo = padre == null ? 0 : padre.costo + 1;
     }
 
  
     public Nodo(String estado, Nodo padre, int nivel) {
+        Puzzle8.validarEstado(estado);
         this.estado = estado;
         this.padre = padre;
         this.nivel = nivel;
-        this.costo = 0;
+        this.costo = padre == null ? 0 : padre.costo + 1;
     }
 
     public String getEstado() { return estado; }
